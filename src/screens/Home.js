@@ -17,7 +17,7 @@ const Home = (props) => {
         let MyCity
         const {city} = props.route.params // esse objeto vem de initialParams do arquivo index.js
         MyCity = city 
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${MyCity}&APPID=ed7627732ae2f0b88120512484d0aa52&units=metric`)
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${MyCity}&APPID=63a9f40d6daf932f918b6ce35cdc5161&units=metric`)
         .then(data=>data.json())
         .then(results=>{
             // O que vem neste 'results' ? 
@@ -40,13 +40,15 @@ const Home = (props) => {
     }
 
     //O método de pegar descrição das temperaturas estará disponível apenas uma única vez
-    useEffect(()=>{
-        getWeather()
-    }, [])
    
-    if(props.route.params.city != "london"){
+   
+    {props.route.params.city === "london" ? useEffect(()=>{
         getWeather()
-    }
+    },[props.route.params.city]) : null}
+
+    {props.route.params.city != "london" ? useEffect(()=>{
+        getWeather()
+    },[props.route.params.city]) : null}
 
     return(
         <View style={{flex: 1}}>

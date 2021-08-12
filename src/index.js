@@ -48,7 +48,7 @@ const App: () => Node = () => {
           
         }}
         >
-          <Tab.Screen name="home" component={Home} />
+          <Tab.Screen name="home" component={Home} initialParams={{city : 'london'}}/>
           <Tab.Screen name="search" component={Search}/>
         </Tab.Navigator>
       </NavigationContainer>
