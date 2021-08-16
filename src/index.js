@@ -1,14 +1,5 @@
 import React from 'react';
-import type { Node } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { StatusBar } from 'react-native';
 
 import Search from './screens/Search'
 import Home from './screens/Home'
@@ -19,17 +10,15 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const Tab = createBottomTabNavigator()
 
-const App: () => Node = () => {
+export default function App () {
 
   return (
     <>
       <StatusBar barStyle='dark-content' backgroundColor="#00aaff"/>      
       <NavigationContainer >
         <Tab.Navigator
-        initialRouteName="search"
+        initialRouteName="home"
         screenOptions={({route})=>({
-          
-          
           tabBarIcon:({color})=>{
             let iconName
             if(route.name === "home"){
@@ -48,12 +37,10 @@ const App: () => Node = () => {
           
         }}
         >
-          <Tab.Screen name="home" component={Home} initialParams={{city : 'london'}}/>
+          <Tab.Screen name="home" component={Home} initialParams={{city : 'sao paulo'}}/>
           <Tab.Screen name="search" component={Search}/>
         </Tab.Navigator>
       </NavigationContainer>
     </>
   );
 };
-
-export default App;

@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { TextInput, Button, Card, Title } from 'react-native-paper';
-import { View, Text, FlatList, Image } from 'react-native'
+import { Card, Title } from 'react-native-paper';
+import { View, Image } from 'react-native'
 import Header from './Header'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Home = (props) => {
 
     const [info, setInfo] = useState({
-        name:"loading..",
-        temp:"loading..",
-        humidity:"loading..",
-        desc:"loading..",
-        icon:"loading.."
+        name:"carregando..",
+        temp:"carregando..",
+        humidity:"carregando..",
+        desc:"carregando..",
+        icon:"carregando.."
     })
 
-    const getWeather = () => {
-        let MyCity
-        const {city} = props.route.params // esse objeto vem de initialParams do arquivo index.js
-        MyCity = city 
+    const getWeather = async () => {
+
+        let MyCity = await AsyncStorage.getItem("novacidade")
+        if(MyCity === null) {
+            //Se ainda não tiver registro algum pra ser capturado no AsyncStorage, então 
+            //Carregue o que tiver passado como props no index.js
+            const {city} = props.route.params 
+            MyCity = city 
+        } 
+        
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${MyCity}&APPID=63a9f40d6daf932f918b6ce35cdc5161&units=metric`)
         .then(data=>data.json())
         .then(results=>{
@@ -41,18 +48,17 @@ const Home = (props) => {
 
     //O método de pegar descrição das temperaturas estará disponível apenas uma única vez
    
-   
-    {props.route.params.city === "london" ? useEffect(()=>{
+    {props.route.params.city === 'sao paulo' ? useEffect(()=>{ 
         getWeather()
     },[props.route.params.city]) : null}
 
-    {props.route.params.city != "london" ? useEffect(()=>{
+    {props.route.params.city !== 'sao paulo' ? useEffect(()=>{
         getWeather()
     },[props.route.params.city]) : null}
 
     return(
         <View style={{flex: 1}}>
-            <Header name="Aplicativo do Tempo"/>
+            <Header name="Climatempo do Weslley"/>
             <View style={{alignItems: 'center'}}>
                 <Title
                 style={{color:"#00aaff", marginTop:30, fontSize: 30}}>
@@ -63,13 +69,13 @@ const Home = (props) => {
             </View>
 
             <Card style={{margin:5, padding:12}}>
-                <Title style={{color: "#00aaff"}}> Temperature: {info.temp} </Title>
+                <Title style={{color: "#00aaff"}}> Temperatura: {info.temp} </Title>
             </Card>
             <Card style={{margin:5, padding:12}}>
-                <Title style={{color: "#00aaff"}}> Humidity: {info.humidity} </Title>
+                <Title style={{color: "#00aaff"}}> Umidade: {info.humidity} </Title>
             </Card>
             <Card style={{margin:5, padding:12}}>
-                <Title style={{color: "#00aaff"}}> Description: {info.desc} </Title>
+                <Title style={{color: "#00aaff"}}> Descrição: {info.desc} </Title>
             </Card>
         </View>
     )

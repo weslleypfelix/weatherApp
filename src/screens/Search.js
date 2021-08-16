@@ -2,18 +2,17 @@ import React, { useState } from 'react';
 import { TextInput, Button, Card } from 'react-native-paper';
 import { View, Text, FlatList } from 'react-native'
 import Header from './Header'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Search = ({ navigation }) => {
 
     const [city, setCity] = useState('')
     const [cities, setCities] = useState([])
-    const fetchCities = (text) => {// Está recebendo o que foi passado no textInput com o valor 'text'. 
+    const fetchCities = (text) => {
         setCity(text)
         fetch("https://api.weather.com/v3/location/search?apiKey=6532d6454b8aa370768e63d6ba5a832e&language=en-US&query=" + text + "&locationType=city&format=json")
-            // O Fetch é uma função que vai receber como parâmetro o endereco da API que se quer fazer uma consulta.
-            .then(item => item.json()) //Parse da resposta para .json
-            .then(resultado => { //Depois ele vai pegar a resposta acima e trabalhar com ela
+            .then(item => item.json())
+            .then(resultado => { 
                 setCities(resultado.location.address.slice(0, 9))
             })
             .catch((erro) => {
@@ -24,15 +23,17 @@ const Search = ({ navigation }) => {
                 // console.warn("Falha ao fazer requisição à api!..")
                 console.log(`${erro} Erro ao buscar comunicação com a API`)
             })
-        // A api irá retornar uma promise. E a forma como lidamos com promises é com .then() e .catch()
+        // A api irá retornar uma promise. E a forma como lidamos com promises é com .then() e .catch()!
     }
 
-    const btnClick = () => {
+    const btnClick = async () => { // Clique a partir do botão
+        await AsyncStorage.setItem("novacidade", city)
         navigation.navigate("home", { city: city })
     }
 
-    const listClick = (cityname) => { //cityname é o nome da cidade que for clicada
+    const listClick = async (cityname) => { //Clique a partir da lista 
         setCity(cityname)
+        await AsyncStorage.setItem("novacidade", cityname)
         navigation.navigate("home", { city: cityname })
     }
 
@@ -49,7 +50,7 @@ const Search = ({ navigation }) => {
                     theme={{ colors: { primary: "#00aaff", accent: "black" } }}
                     value={city}
                     onChangeText={(text) => fetchCities(text)}
-                // Esse fetchCities é uma função que vai receber o valor que for passado no textInput.
+                // Esse fetchCities é uma função qu e vai receber o valor que for passado no textInput.
                 />
                 <Button icon="content-save" mode="contained"
                     theme={{ colors: { primary: "#00aaff", } }
